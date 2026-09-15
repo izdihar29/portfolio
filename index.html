@@ -135,19 +135,20 @@
             </div>
           </div>
         </div>
-        <form id="contactForm" class="contact-form">
-          <div class="form-group">
-            <input type="text" id="name" placeholder="Your Name" required>
-          </div>
-          <div class="form-group">
-            <input type="email" id="email" placeholder="Your Email" required>
-          </div>
-          <div class="form-group">
-            <textarea id="message" rows="5" placeholder="Your Message" required></textarea>
-          </div>
-          <button type="submit" class="btn-primary">Send Message</button>
-          <div id="formMessage" class="form-message"></div>
-        </form>
+<form id="contactForm" class="contact-form" action="https://formspree.io/f/your-form-id" method="POST">
+            <input type="hidden" name="_formname" value="contact">
+            <div class="form-group">
+              <input type="text" name="name" id="name" placeholder="Your Name" required>
+            </div>
+            <div class="form-group">
+              <input type="email" name="email" id="email" placeholder="Your Email" required>
+            </div>
+            <div class="form-group">
+              <textarea name="message" id="message" rows="5" placeholder="Your Message" required></textarea>
+            </div>
+            <button type="submit" class="btn-primary">Send Message</button>
+            <div id="formMessage" class="form-message"></div>
+          </form>
       </div>
     </div>
   </section>

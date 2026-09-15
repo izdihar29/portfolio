@@ -61,31 +61,47 @@ document.addEventListener('DOMContentLoaded', () => {
   const statsSection = document.querySelector('.about-stats');
   if (statsSection) statsObserver.observe(statsSection);
 
-  contactForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const name = document.getElementById('name').value.trim();
-    const email = document.getElementById('email').value.trim();
-    const message = document.getElementById('message').value.trim();
+contactForm.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const name = document.getElementById('name').value.trim();
+  const email = document.getElementById('email').value.trim();
+  const message = document.getElementById('message').value.trim();
 
-    if (!name || !email || !message) {
-      formMessage.textContent = 'Please fill in all fields.';
+  if (!name || !email || !message) {
+    formMessage.textContent = 'Please fill in all fields.';
+    formMessage.className = 'form-message error';
+    return;
+  }
+
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
+    formMessage.textContent = 'Please enter a valid email address.';
+    formMessage.className = 'form-message error';
+    return;
+  }
+
+  formMessage.textContent = 'Sending...';
+  formMessage.className = 'form-message';
+
+  try {
+    const response = await fetch(contactForm.action, {
+      method: 'POST',
+      body: new FormData(contactForm),
+      headers: { 'Accept': 'application/json' }
+    });
+    if (response.ok) {
+      formMessage.textContent = 'Message sent successfully! 🎉';
+      formMessage.className = 'form-message success';
+      contactForm.reset();
+      setTimeout(() => { formMessage.textContent = ''; }, 5000);
+    } else {
+      const err = await response.json();
+      formMessage.textContent = err.errors?.map(e => e.message).join(', ') || 'Something went wrong.';
       formMessage.className = 'form-message error';
-      return;
     }
-
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      formMessage.textContent = 'Please enter a valid email address.';
-      formMessage.className = 'form-message error';
-      return;
-    }
-
-    formMessage.textContent = 'Message sent successfully! 🎉';
-    formMessage.className = 'form-message success';
-    contactForm.reset();
-
-    setTimeout(() => {
-      formMessage.textContent = '';
-    }, 5000);
-  });
+  } catch (err) {
+    formMessage.textContent = 'Something went wrong. Please try again.';
+    formMessage.className = 'form-message error';
+  }
+});
 });
